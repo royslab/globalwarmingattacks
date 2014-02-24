@@ -15,13 +15,16 @@ protected:
 	static const int BALL_TAG = 1;
 	static const int BAR_TAG = 2;
 
+	int ballLife = 10;
 	void initGame();
 	void addNewBallAtPosition(cocos2d::Point p);
 	void spawnBars();
 	cocos2d::Sprite* createBar();
-	bool onContactBegin(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contactRef);
+	bool onContactBegin(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
 	cocos2d::PhysicsWorld* m_world;
-
+	void processCollision(cocos2d::PhysicsBody *body);
+	void ballHit();
+	void removeBarFromBody(cocos2d::PhysicsBody *body);
 
 };
 #endif // _ARCANOID_H_

@@ -45,9 +45,10 @@ void Arcanoid::initGame() {
 void Arcanoid::addNewBallAtPosition(Point p)
 {
 	auto sprite = Sprite::create("arcanoid/ball.png");
-	sprite->setTag(BALL_TAG);
+	
 	auto body = PhysicsBody::createCircle(sprite->getContentSize().width / 2, PhysicsMaterial(0.1,1,0));
-	body->applyImpulse(Vect(50000, 50000));
+	body->applyImpulse(Vect(100000, 100000));
+	body->setTag(BALL_TAG);
 	sprite->setPhysicsBody(body);
 	
 	sprite->setPosition(p);
@@ -86,14 +87,43 @@ void Arcanoid::spawnBars() {
 
 Sprite *Arcanoid::createBar() {
 	Sprite *sprite = Sprite::create("arcanoid/bar.png");
-	sprite->setTag(BAR_TAG);
+	
 	Size size = Size(sprite->getContentSize().width, sprite->getContentSize().height);
 	auto body = PhysicsBody::createBox(size, PhysicsMaterial(0.5, 1, 0));
+	body->setTag(BAR_TAG);
 	body->setDynamic(false);
 	sprite->setPhysicsBody(body);
 
 	return sprite;
 }
-bool Arcanoid::onContactBegin(EventCustom* event, const PhysicsContact& contactRef) {
+bool Arcanoid::onContactBegin(EventCustom* event, const PhysicsContact& contact) {
+
+	this->processCollision(contact.getShapeA()->getBody());
+	this->processCollision(contact.getShapeB()->getBody());
 	return true;
+}
+
+void Arcanoid::processCollision(PhysicsBody *body) {
+	int tag = body->getTag();
+
+	if (tag == BALL_TAG) {
+		this->ballHit();
+	}
+	else if (tag == BAR_TAG) {
+		removeBarFromBody(body);
+	}
+}
+
+void Arcanoid::ballHit() {
+	this->ballLife--;
+	CCLOG("Ball life: %d", this->ballLife);
+	if (this->ballLife == 0) {
+		CCLOG("GAME OVER");
+	}
+}
+
+void Arcanoid::removeBarFromBody(PhysicsBody *body) {
+	Node *node = body->getNode();
+	body->removeFromWorld();
+	this->removeChild(node, true);
 }
