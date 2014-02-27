@@ -55,6 +55,7 @@ class PhysicsBody : public Object
 {
 public:
     /** create a body with defult mass and moment. */
+	void* userData;
     static PhysicsBody* create();
     /** create a body with mass and defult moment. */
     static PhysicsBody* create(float mass);

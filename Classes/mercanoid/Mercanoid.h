@@ -17,8 +17,6 @@ public:
 	
 protected:
 	
-
-	int ballLife = 10;
 	void initGame();
 	void addNewBallAtPosition(cocos2d::Point p);
 	void spawnBars();
@@ -26,7 +24,7 @@ protected:
 	bool onContactBegin(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
 	cocos2d::PhysicsWorld* m_world;
 	void processCollision(cocos2d::PhysicsBody *body);
-	void ballHit();
+	void ballHit(Ball *ball);
 	void removeBarFromBody(cocos2d::PhysicsBody *body);
 	Ball* ball;
 };

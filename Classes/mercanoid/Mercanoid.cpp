@@ -5,7 +5,7 @@ USING_NS_CC;
 Scene* Mercanoid::createScene()
 {
 	auto scene = Scene::createWithPhysics();
-	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 	auto layer = Mercanoid::create();
 	layer->setPhyWorld(scene->getPhysicsWorld());
@@ -50,20 +50,10 @@ void Mercanoid::addNewBallAtPosition(Point p)
 {
 	Ball *ball = Ball::create("mercanoid/ball.png");
 	ball->getView()->setPosition(p);
+	ball->setLife(20);
 	this->addChild(ball->getView());
 
 	this->ball = ball;
-	/*
-	auto sprite = Sprite::create("mercanoid/ball.png");
-	
-	auto body = PhysicsBody::createCircle(sprite->getContentSize().width / 2, PhysicsMaterial(0.1,1,0));
-	body->applyImpulse(Vect(100000, 100000));
-	body->setTag(BALL_TAG);
-	sprite->setPhysicsBody(body);
-	
-	sprite->setPosition(p);
-	this->addChild(sprite);
-	*/
 }
 
 void Mercanoid::spawnBars() {
@@ -104,7 +94,7 @@ Sprite *Mercanoid::createBar() {
 	return sprite;
 }
 bool Mercanoid::onContactBegin(EventCustom* event, const PhysicsContact& contact) {
-
+	
 	this->processCollision(contact.getShapeA()->getBody());
 	this->processCollision(contact.getShapeB()->getBody());
 	return true;
@@ -114,17 +104,17 @@ void Mercanoid::processCollision(PhysicsBody *body) {
 	int tag = body->getTag();
 
 	if (tag == BALL_TAG) {
-		this->ballHit();
+		Ball* ball = (Ball*) body->userData;
+		this->ballHit(ball);
 	}
 	else if (tag == BAR_TAG) {
 		removeBarFromBody(body);
 	}
 }
 
-void Mercanoid::ballHit() {
-	this->ballLife--;
-	CCLOG("Ball life: %d", this->ballLife);
-	if (this->ballLife == 0) {
+void Mercanoid::ballHit(Ball *ball) {
+	ball->collide(1);
+	if (ball->getLife() <= 0) {
 		CCLOG("GAME OVER");
 	}
 }

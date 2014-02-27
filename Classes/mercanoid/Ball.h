@@ -17,6 +17,11 @@ class Ball
 	protected:
 		int life = 0;
 		cocos2d::Sprite *view;
+		cocos2d::LabelBMFont *lifeLabel;
+		
+		void initView(const std::string& skin);
+		void initLife();
+		void updateLifeLabel();
 };
 
 #endif // _MERCANOID_BALL_H_
