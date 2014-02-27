@@ -10,8 +10,8 @@
     <Filter Include="resource">
       <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\scene">
-      <UniqueIdentifier>{dd666d4b-89ae-41e3-9e99-9b9cb0f0c15d}</UniqueIdentifier>
+    <Filter Include="Classes\mercanoid">
+      <UniqueIdentifier>{126ff40c-b82b-4c96-9a6b-e26bcffa7436}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -21,11 +21,11 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>Classes</Filter>
+    <ClCompile Include="..\Classes\mercanoid\Mercanoid.cpp">
+      <Filter>Classes\mercanoid</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\scene\Arcanoid.cpp">
-      <Filter>Classes\scene</Filter>
+    <ClCompile Include="..\Classes\mercanoid\Ball.cpp">
+      <Filter>Classes\mercanoid</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,11 +35,11 @@
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
-      <Filter>Classes</Filter>
+    <ClInclude Include="..\Classes\mercanoid\Mercanoid.h">
+      <Filter>Classes\mercanoid</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\scene\Arcanoid.h">
-      <Filter>Classes\scene</Filter>
+    <ClInclude Include="..\Classes\mercanoid\Ball.h">
+      <Filter>Classes\mercanoid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
