@@ -16,9 +16,10 @@ public:
 	void setPhyWorld(cocos2d::PhysicsWorld* world){ m_world = world; }
 	
 protected:
-	
+	cocos2d::Point *touchPosition;
 	void initGame();
-	void addNewBallAtPosition(cocos2d::Point p);
+	void initListeners();
+	void addNewBall(cocos2d::Point position, cocos2d::Point impulse, int life);
 	void spawnBars();
 	cocos2d::Sprite* createBar();
 	bool onContactBegin(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
@@ -26,6 +27,5 @@ protected:
 	void processCollision(cocos2d::PhysicsBody *body);
 	void ballHit(Ball *ball);
 	void removeBarFromBody(cocos2d::PhysicsBody *body);
-	Ball* ball;
 };
 #endif // _MERCANOID_H_

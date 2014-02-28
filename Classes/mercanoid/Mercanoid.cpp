@@ -24,7 +24,7 @@ bool Mercanoid::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point origin = Director::getInstance()->getVisibleOrigin();
-
+	this->touchPosition = new Point();
 	initGame();
 
 	return true;
@@ -39,21 +39,73 @@ void Mercanoid::initGame() {
 	this->addChild(edgeNode);
 
 	this->spawnBars();
-	this->addNewBallAtPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+	this->initListeners();
+	
 
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_2(Mercanoid::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 }
 
-void Mercanoid::addNewBallAtPosition(Point p)
+void Mercanoid::initListeners() {
+	auto listener = EventListenerTouchOneByOne::create();
+
+	listener->setSwallowTouches(true);
+
+	listener->onTouchBegan = [&](Touch* touch, Event* event){
+		Point pos = this->convertTouchToNodeSpace(touch);
+		this->touchPosition->x = pos.x;
+		this->touchPosition->y = pos.y;
+
+		return true;
+	};
+
+	listener->onTouchEnded = [&](Touch* touch, Event* event){
+		//
+		Point endPosition = this->convertTouchToNodeSpace(touch);
+
+		Point versor = endPosition - *this->touchPosition;
+		versor = versor.normalize();
+		versor.x *= 50000;
+		versor.y *= 50000;
+		this->addNewBall(*touchPosition, versor, 20);
+		/*if (!this->blocked) {
+			
+
+			int movedDistance = endPosition.x - this->touchPosition->x;
+			int movedDirection = (fabsf(movedDistance) > Capcha::MIN_DRAG_DISTANCE) ? fabsf(movedDistance) / movedDistance : 0;
+
+			if (this->ruleSecuence[currSecuenceIndex] == movedDirection) {
+				currSecuenceIndex++;
+				this->unschedule(schedule_selector(Capcha::timesUp));
+				this->scheduleOnce(schedule_selector(Capcha::timesUp), IDLE_TIME);
+
+				if (currSecuenceIndex == RULE_SECUENCE_LENGTH) {
+					this->blocked = true;
+					this->unschedule(schedule_selector(Capcha::timesUp));
+					this->capchaSucceed();
+
+				}
+			}
+			else
+			{
+				this->timesUp(0);
+			}
+		}*/
+	};
+
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void Mercanoid::addNewBall(Point position, Point impulse, int life)
 {
 	Ball *ball = Ball::create("mercanoid/ball.png");
-	ball->getView()->setPosition(p);
-	ball->setLife(20);
-	this->addChild(ball->getView());
-
-	this->ball = ball;
+	ball->setPosition(position);
+	ball->addImpulse(impulse);
+	ball->setLife(life);
+	ball->retain();
+	Sprite *view = ball->getView();
+	this->addChild(view);
 }
 
 void Mercanoid::spawnBars() {
@@ -115,7 +167,8 @@ void Mercanoid::processCollision(PhysicsBody *body) {
 void Mercanoid::ballHit(Ball *ball) {
 	ball->collide(1);
 	if (ball->getLife() <= 0) {
-		CCLOG("GAME OVER");
+		this->removeChild(ball->getView());
+		ball->release();
 	}
 }
 

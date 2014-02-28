@@ -9,6 +9,7 @@ Ball* Ball::create(const std::string& skin)
 
 	if (ball && ball->init(skin))
 	{
+		ball->autorelease();
 		return ball;
 	}
 	CC_SAFE_DELETE(ball);
@@ -33,7 +34,7 @@ void Ball::initView(const std::string& skin) {
 
 	auto body = PhysicsBody::createCircle(this->view->getContentSize().width / 2, PhysicsMaterial(0.1, 1, 0));
 	body->userData = this;
-	body->applyImpulse(Vect(50000, 50000));
+	
 	body->setTag(Mercanoid::BALL_TAG);
 	this->view->setPhysicsBody(body);
 }
@@ -65,6 +66,14 @@ void Ball::setLife(int amount) {
 
 int Ball::getLife() {
 	return this->life;
+}
+
+void Ball::setPosition(cocos2d::Point position) {
+	this->view->setPosition(position);
+}
+
+void Ball::addImpulse(cocos2d::Point impulse) {
+	this->view->getPhysicsBody()->applyImpulse(Vect(impulse.x, impulse.y));
 }
 
 void Ball::collide(int damage) {
