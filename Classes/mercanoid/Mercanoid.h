@@ -17,15 +17,22 @@ public:
 	
 protected:
 	cocos2d::Point *touchPosition;
+	cocos2d::PhysicsWorld* m_world;
+	cocos2d::Vector<Ball*> balls;
+
 	void initGame();
 	void initListeners();
-	void addNewBall(cocos2d::Point position, cocos2d::Point impulse, int life);
+	void initUI();
+	Ball* addNewBall(cocos2d::Point position, cocos2d::Point impulse, int life);
+	void destroyBall(Ball *ball);
 	void spawnBars();
 	cocos2d::Sprite* createBar();
 	bool onContactBegin(cocos2d::EventCustom* event, const cocos2d::PhysicsContact& contact);
-	cocos2d::PhysicsWorld* m_world;
 	void processCollision(cocos2d::PhysicsBody *body);
 	void ballHit(Ball *ball);
 	void removeBarFromBody(cocos2d::PhysicsBody *body);
+
+	void powerupHealCallback(Object* pSender);
+	void powerupMultiCallback(Object* pSender);
 };
 #endif // _MERCANOID_H_

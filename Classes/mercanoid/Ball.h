@@ -9,11 +9,15 @@ class Ball : public cocos2d::Object
 		static Ball* create(const std::string& skin);
 		
 		bool init(const std::string& skin);
+
 		void setLife(int amount);
+		void addLife(int amount);
+		int getLife();
+
 		void setPosition(cocos2d::Point position);
 		void addImpulse(cocos2d::Point impulse);
 		
-		int getLife();
+		
 		cocos2d::Sprite* getView();
 		void collide(int damage);
 		~Ball();

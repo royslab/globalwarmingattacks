@@ -64,6 +64,12 @@ void Ball::setLife(int amount) {
 	updateLifeLabel();
 }
 
+void Ball::addLife(int amount) {
+	this->life += amount;
+	updateLifeLabel();
+}
+
+
 int Ball::getLife() {
 	return this->life;
 }

@@ -40,6 +40,7 @@ void Mercanoid::initGame() {
 
 	this->spawnBars();
 	this->initListeners();
+	this->initUI();
 	
 
 	auto contactListener = EventListenerPhysicsContact::create();
@@ -97,15 +98,45 @@ void Mercanoid::initListeners() {
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
-void Mercanoid::addNewBall(Point position, Point impulse, int life)
+void Mercanoid::initUI() {
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Point origin = Director::getInstance()->getVisibleOrigin();
+
+	auto healBtn = MenuItemImage::create(
+		"mercanoid/powerup_heal_static.png",
+		"mercanoid/powerup_heal_press.png",
+		CC_CALLBACK_1(Mercanoid::powerupHealCallback, this));
+
+	auto multiBtn = MenuItemImage::create(
+		"mercanoid/powerup_multi_static.png",
+		"mercanoid/powerup_multi_press.png",
+		CC_CALLBACK_1(Mercanoid::powerupMultiCallback, this));
+
+	int healBtnX = origin.x + visibleSize.width - (healBtn->getContentSize().width / 2)-10;
+	int healBtnY = origin.y + (healBtn->getContentSize().height / 2) + 10;
+	healBtn->setPosition(Point(healBtnX, healBtnY));
+
+	int multiBtnX = origin.x + visibleSize.width - healBtn->getContentSize().width - 20 - multiBtn->getContentSize().width / 2;
+	int multiBtnY = origin.y + (multiBtn->getContentSize().height / 2) + 10;
+	multiBtn->setPosition(Point(multiBtnX, multiBtnY));
+
+	// BUTTONS MENU
+	auto menu = Menu::create(healBtn, multiBtn, NULL);
+	menu->setPosition(Point::ZERO);
+	this->addChild(menu, 1);
+}
+
+Ball* Mercanoid::addNewBall(Point position, Point impulse, int life)
 {
 	Ball *ball = Ball::create("mercanoid/ball.png");
 	ball->setPosition(position);
 	ball->addImpulse(impulse);
 	ball->setLife(life);
-	ball->retain();
 	Sprite *view = ball->getView();
 	this->addChild(view);
+	this->balls.pushBack(ball);
+
+	return ball;
 }
 
 void Mercanoid::spawnBars() {
@@ -167,9 +198,13 @@ void Mercanoid::processCollision(PhysicsBody *body) {
 void Mercanoid::ballHit(Ball *ball) {
 	ball->collide(1);
 	if (ball->getLife() <= 0) {
-		this->removeChild(ball->getView());
-		ball->release();
+		destroyBall(ball);
 	}
+}
+
+void Mercanoid::destroyBall(Ball *ball) {
+	this->removeChild(ball->getView());
+	this->balls.eraseObject(ball);
 }
 
 void Mercanoid::removeBarFromBody(PhysicsBody *body) {
@@ -177,3 +212,39 @@ void Mercanoid::removeBarFromBody(PhysicsBody *body) {
 	body->removeFromWorld();
 	this->removeChild(node, true);
 }
+
+void Mercanoid::powerupHealCallback(Object* pSender)
+{
+	for (auto ball : this->balls) {
+		ball->addLife(10);
+	}
+}
+
+void Mercanoid::powerupMultiCallback(Object* pSender)
+{
+	Vector<Ball*> tmp;
+	tmp.pushBack(this->balls);
+
+
+	for (auto ball : tmp) {
+		PhysicsBody *body = ball->getView()->getPhysicsBody();
+		Point ballPosition = ball->getView()->getPosition();
+		Point ballVelocity = body->getVelocity();
+
+		// BALL 1
+		Point ball1Position = ballVelocity.normalize().rotate(Point(0, 1)) * (ball->getView()->getContentSize().width *0.5);
+		Point vel1 = ballVelocity.rotate(Point(5, 3).normalize());
+		Ball* ball1 = addNewBall(ball1Position, Point(), ball->getLife());
+		ball1->getView()->getPhysicsBody()->setVelocity(vel1);
+		
+		// BALL 1
+		Point ball2Position = ballVelocity.normalize().rotate(Point(0, -1)) * (ball->getView()->getContentSize().width *0.5);
+		Point vel2 = ballVelocity.rotate(Point(5, -3).normalize());
+		Ball* ball2 = addNewBall(ball2Position, Point(), ball->getLife());
+		ball2->getView()->getPhysicsBody()->setVelocity(vel1);
+
+		this->destroyBall(ball);
+	}
+}
+
+//TODO: Destroy balls vector on destruct
