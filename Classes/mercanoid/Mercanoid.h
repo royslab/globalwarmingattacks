@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Ball.h"
+#include "BallsFactory.h"
 
 class Mercanoid : public cocos2d::Layer
 {
@@ -19,11 +20,12 @@ protected:
 	cocos2d::Point *touchPosition;
 	cocos2d::PhysicsWorld* m_world;
 	cocos2d::Vector<Ball*> balls;
+	BallsFactory* ballsFactory = new BallsFactory();
 
 	void initGame();
 	void initListeners();
 	void initUI();
-	Ball* addNewBall(cocos2d::Point position, cocos2d::Point impulse, int life);
+	Ball* addNewBall(cocos2d::Point position, cocos2d::Point impulse, int life, int tier);
 	void destroyBall(Ball *ball);
 	void spawnBars();
 	cocos2d::Sprite* createBar();
@@ -34,5 +36,7 @@ protected:
 
 	void powerupHealCallback(Object* pSender);
 	void powerupMultiCallback(Object* pSender);
+
+	//BallsFactory* ballsFactory;
 };
 #endif // _MERCANOID_H_

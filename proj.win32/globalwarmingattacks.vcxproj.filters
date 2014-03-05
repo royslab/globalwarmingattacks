@@ -27,6 +27,9 @@
     <ClCompile Include="..\Classes\mercanoid\Ball.cpp">
       <Filter>Classes\mercanoid</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\mercanoid\BallsFactory.cpp">
+      <Filter>Classes\mercanoid</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -39,6 +42,18 @@
       <Filter>Classes\mercanoid</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\mercanoid\Ball.h">
+      <Filter>Classes\mercanoid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mercanoid\BallDefinition.h">
+      <Filter>Classes\mercanoid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mercanoid\Tier1Definition.h">
+      <Filter>Classes\mercanoid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mercanoid\Tier2Definition.h">
+      <Filter>Classes\mercanoid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\mercanoid\BallsFactory.h">
       <Filter>Classes\mercanoid</Filter>
     </ClInclude>
   </ItemGroup>

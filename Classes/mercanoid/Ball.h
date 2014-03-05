@@ -2,13 +2,14 @@
 #define  _MERCANOID_BALL_H_
 
 #include "cocos2d.h"
+#include "BallDefinition.h"
 
 class Ball : public cocos2d::Object
 {
 	public:
-		static Ball* create(const std::string& skin);
+		static Ball* create(BallDefinition* def);
 		
-		bool init(const std::string& skin);
+		bool init(BallDefinition* def);
 
 		void setLife(int amount);
 		void addLife(int amount);
@@ -26,7 +27,7 @@ class Ball : public cocos2d::Object
 		cocos2d::Sprite *view;
 		cocos2d::LabelBMFont *lifeLabel;
 		
-		void initView(const std::string& skin);
+		void initView(BallDefinition* def);
 		void initLife();
 		void updateLifeLabel();
 };

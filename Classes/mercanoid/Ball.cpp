@@ -1,13 +1,14 @@
 #include "Ball.h"
 #include "Mercanoid.h"
+#include "BallDefinition.h"
 
 USING_NS_CC;
 
-Ball* Ball::create(const std::string& skin)
+Ball* Ball::create(BallDefinition* def)
 {
 	Ball *ball = new Ball();
 
-	if (ball && ball->init(skin))
+	if (ball && ball->init(def))
 	{
 		ball->autorelease();
 		return ball;
@@ -20,19 +21,19 @@ Ball::~Ball() {
 	this->view->release();
 }
 
-bool Ball::init(const std::string& skin) {
+bool Ball::init(BallDefinition* def) {
 
-	initView(skin);
+	initView(def);
 	initLife();
 
 	return true;
 }
 
-void Ball::initView(const std::string& skin) {
-	this->view = Sprite::create(skin);
+void Ball::initView(BallDefinition* def) {
+	this->view = Sprite::create(def->getAssetFile());
 	this->view->retain();
 
-	auto body = PhysicsBody::createCircle(this->view->getContentSize().width / 2, PhysicsMaterial(0.1, 1, 0));
+	auto body = PhysicsBody::createCircle(def->getRadius(), PhysicsMaterial(0.1, 1, 0));
 	body->userData = this;
 	
 	body->setTag(Mercanoid::BALL_TAG);

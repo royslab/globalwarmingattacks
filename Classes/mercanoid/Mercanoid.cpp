@@ -5,7 +5,7 @@ USING_NS_CC;
 Scene* Mercanoid::createScene()
 {
 	auto scene = Scene::createWithPhysics();
-	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+	scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 	scene->getPhysicsWorld()->setGravity(Vect(0, 0));
 	auto layer = Mercanoid::create();
 	layer->setPhyWorld(scene->getPhysicsWorld());
@@ -21,7 +21,7 @@ bool Mercanoid::init()
 	{
 		return false;
 	}
-
+	//ballsFactory = new BallsFactory();
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point origin = Director::getInstance()->getVisibleOrigin();
 	this->touchPosition = new Point();
@@ -69,7 +69,7 @@ void Mercanoid::initListeners() {
 		versor = versor.normalize();
 		versor.x *= 50000;
 		versor.y *= 50000;
-		this->addNewBall(*touchPosition, versor, 20);
+		this->addNewBall(*touchPosition, versor, 20,1);
 		/*if (!this->blocked) {
 			
 
@@ -126,9 +126,9 @@ void Mercanoid::initUI() {
 	this->addChild(menu, 1);
 }
 
-Ball* Mercanoid::addNewBall(Point position, Point impulse, int life)
+Ball* Mercanoid::addNewBall(Point position, Point impulse, int life, int tier)
 {
-	Ball *ball = Ball::create("mercanoid/ball.png");
+	Ball *ball = this->ballsFactory->getBall(tier);
 	ball->setPosition(position);
 	ball->addImpulse(impulse);
 	ball->setLife(life);
@@ -230,18 +230,21 @@ void Mercanoid::powerupMultiCallback(Object* pSender)
 		PhysicsBody *body = ball->getView()->getPhysicsBody();
 		Point ballPosition = ball->getView()->getPosition();
 		Point ballVelocity = body->getVelocity();
-
+		Point ballVelocityNorm = ballVelocity.normalize();
 		// BALL 1
-		Point ball1Position = ballVelocity.normalize().rotate(Point(0, 1)) * (ball->getView()->getContentSize().width *0.5);
-		Point vel1 = ballVelocity.rotate(Point(5, 3).normalize());
-		Ball* ball1 = addNewBall(ball1Position, Point(), ball->getLife());
+		Point ball1Position = body->getVelocity().normalize().rotate(Point(0, 1)) * (ball->getView()->getContentSize().width / 2);
+		ball1Position = ball1Position + ball->getView()->getPosition();
+		//Point ball1Position = ball->getView()->getPosition();
+		Point vel1 = ballVelocity.rotate(Point(5, 2).normalize());
+		Ball* ball1 = addNewBall(ball1Position, Point(), ball->getLife(),2);
 		ball1->getView()->getPhysicsBody()->setVelocity(vel1);
 		
 		// BALL 1
-		Point ball2Position = ballVelocity.normalize().rotate(Point(0, -1)) * (ball->getView()->getContentSize().width *0.5);
-		Point vel2 = ballVelocity.rotate(Point(5, -3).normalize());
-		Ball* ball2 = addNewBall(ball2Position, Point(), ball->getLife());
-		ball2->getView()->getPhysicsBody()->setVelocity(vel1);
+		Point ball2Position = (ballVelocity.normalize().rotate(Point(0, -1)) * (ball->getView()->getContentSize().width / 2)) + ball->getView()->getPosition();
+		//Point ball2Position = ball->getView()->getPosition();
+		Point vel2 = ballVelocity.rotate(Point(5, -2).normalize());
+		Ball* ball2 = addNewBall(ball2Position, Point(), ball->getLife(),2);
+		ball2->getView()->getPhysicsBody()->setVelocity(vel2);
 
 		this->destroyBall(ball);
 	}
